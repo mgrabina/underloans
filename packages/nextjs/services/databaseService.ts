@@ -53,7 +53,6 @@ class DatabaseService {
   async getUser({ wallet }: Pick<UserTable, "wallet">) {
     // Fetch the whitelist data where the wallet matches the provided value
     const result = await this.db.selectFrom("user").selectAll().where("wallet", "=", wallet).executeTakeFirst();
-    // Return the result (it will be an array, so handle it accordingly)
     return result;
   }
 }
