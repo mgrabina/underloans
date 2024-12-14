@@ -18,9 +18,9 @@ import type {
   TypedEventLog,
   TypedListener,
   TypedContractMethod,
-} from "../../common";
+} from "../../../common";
 
-export interface VerifierInterface extends Interface {
+export interface Verifier2Interface extends Interface {
   getFunction(
     nameOrSignature:
       | "verifyProof(bytes,uint256[6])"
@@ -51,11 +51,11 @@ export interface VerifierInterface extends Interface {
   ): Result;
 }
 
-export interface Verifier extends BaseContract {
-  connect(runner?: ContractRunner | null): Verifier;
+export interface Verifier2 extends BaseContract {
+  connect(runner?: ContractRunner | null): Verifier2;
   waitForDeployment(): Promise<this>;
 
-  interface: VerifierInterface;
+  interface: Verifier2Interface;
 
   queryFilter<TCEvent extends TypedContractEvent>(
     event: TCEvent,

@@ -3679,7 +3679,7 @@ __metadata:
     solidity-coverage: ^0.8.5
     ts-node: ^10.9.1
     typechain: ^8.1.0
-    typescript: ^5.1.6
+    typescript: ^5.7.2
     websnark: "git+https://github.com/tornadocash/websnark.git#2041cfa5fa0b71cd5cca9022a4eeea4afe28c9f7"
     zksync-ethers: ^6.11.2
     zksync-web3: ^0.17.1
@@ -19580,7 +19580,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"typescript@npm:^5.1.6":
+"typescript@npm:^5.7.2":
   version: 5.7.2
   resolution: "typescript@npm:5.7.2"
   bin:
@@ -19610,7 +19610,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"typescript@patch:typescript@^5.1.6#~builtin<compat/typescript>":
+"typescript@patch:typescript@^5.7.2#~builtin<compat/typescript>":
   version: 5.7.2
   resolution: "typescript@patch:typescript@npm%3A5.7.2#~builtin<compat/typescript>::version=5.7.2&hash=a1c5e5"
   bin:

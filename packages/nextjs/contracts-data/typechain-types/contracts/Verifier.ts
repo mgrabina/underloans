@@ -3,11 +3,11 @@
 /* eslint-disable */
 import type {
   BaseContract,
-  BigNumberish,
   BytesLike,
   FunctionFragment,
   Result,
   Interface,
+  AddressLike,
   ContractRunner,
   ContractMethod,
   Listener,
@@ -18,37 +18,32 @@ import type {
   TypedEventLog,
   TypedListener,
   TypedContractMethod,
-} from "../../common";
+} from "../common";
 
 export interface VerifierInterface extends Interface {
   getFunction(
-    nameOrSignature:
-      | "verifyProof(bytes,uint256[6])"
-      | "verifyProof(uint256[2],uint256[2][2],uint256[2],uint256[6])"
+    nameOrSignature: "getEthHashedMessage" | "recover" | "verify"
   ): FunctionFragment;
 
   encodeFunctionData(
-    functionFragment: "verifyProof(bytes,uint256[6])",
-    values: [BytesLike, BigNumberish[]]
+    functionFragment: "getEthHashedMessage",
+    values: [BytesLike]
   ): string;
   encodeFunctionData(
-    functionFragment: "verifyProof(uint256[2],uint256[2][2],uint256[2],uint256[6])",
-    values: [
-      [BigNumberish, BigNumberish],
-      [[BigNumberish, BigNumberish], [BigNumberish, BigNumberish]],
-      [BigNumberish, BigNumberish],
-      BigNumberish[]
-    ]
+    functionFragment: "recover",
+    values: [BytesLike, BytesLike]
+  ): string;
+  encodeFunctionData(
+    functionFragment: "verify",
+    values: [AddressLike, BytesLike, BytesLike]
   ): string;
 
   decodeFunctionResult(
-    functionFragment: "verifyProof(bytes,uint256[6])",
+    functionFragment: "getEthHashedMessage",
     data: BytesLike
   ): Result;
-  decodeFunctionResult(
-    functionFragment: "verifyProof(uint256[2],uint256[2][2],uint256[2],uint256[6])",
-    data: BytesLike
-  ): Result;
+  decodeFunctionResult(functionFragment: "recover", data: BytesLike): Result;
+  decodeFunctionResult(functionFragment: "verify", data: BytesLike): Result;
 }
 
 export interface Verifier extends BaseContract {
@@ -94,19 +89,20 @@ export interface Verifier extends BaseContract {
     event?: TCEvent
   ): Promise<this>;
 
-  "verifyProof(bytes,uint256[6])": TypedContractMethod<
-    [proof: BytesLike, inputs: BigNumberish[]],
-    [boolean],
+  getEthHashedMessage: TypedContractMethod<
+    [message: BytesLike],
+    [string],
     "view"
   >;
 
-  "verifyProof(uint256[2],uint256[2][2],uint256[2],uint256[6])": TypedContractMethod<
-    [
-      a: [BigNumberish, BigNumberish],
-      b: [[BigNumberish, BigNumberish], [BigNumberish, BigNumberish]],
-      c: [BigNumberish, BigNumberish],
-      input: BigNumberish[]
-    ],
+  recover: TypedContractMethod<
+    [_ethHashMessage: BytesLike, _sig: BytesLike],
+    [string],
+    "view"
+  >;
+
+  verify: TypedContractMethod<
+    [_signer: AddressLike, _message: BytesLike, signature: BytesLike],
     [boolean],
     "view"
   >;
@@ -116,21 +112,19 @@ export interface Verifier extends BaseContract {
   ): T;
 
   getFunction(
-    nameOrSignature: "verifyProof(bytes,uint256[6])"
+    nameOrSignature: "getEthHashedMessage"
+  ): TypedContractMethod<[message: BytesLike], [string], "view">;
+  getFunction(
+    nameOrSignature: "recover"
   ): TypedContractMethod<
-    [proof: BytesLike, inputs: BigNumberish[]],
-    [boolean],
+    [_ethHashMessage: BytesLike, _sig: BytesLike],
+    [string],
     "view"
   >;
   getFunction(
-    nameOrSignature: "verifyProof(uint256[2],uint256[2][2],uint256[2],uint256[6])"
+    nameOrSignature: "verify"
   ): TypedContractMethod<
-    [
-      a: [BigNumberish, BigNumberish],
-      b: [[BigNumberish, BigNumberish], [BigNumberish, BigNumberish]],
-      c: [BigNumberish, BigNumberish],
-      input: BigNumberish[]
-    ],
+    [_signer: AddressLike, _message: BytesLike, signature: BytesLike],
     [boolean],
     "view"
   >;

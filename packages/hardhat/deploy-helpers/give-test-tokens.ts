@@ -25,7 +25,7 @@ export const uploadMetadata = async (json: any): Promise<string> => {
 
 // Read addresses from deployments/addresses.json
 const addresses = require('../deployments/addresses.json')
-const metadata: any[] = require('./metadata.json')
+// const metadata: any[] = require('./metadata.json')
 
 // Read metadata array from metadata.json and upload each one and mint NFT
 async function uploadAndMint() {
@@ -46,7 +46,7 @@ async function uploadAndMint() {
 
   // Send some tokens to initial owners
   const USDCContract = (await hre.ethers.getContractFactory('USDC')) as USDC__factory
-  const USDC = USDCContract.attach(addresses[network.name].USDC) as USDC
+  const USDC = USDCContract.attach(addresses[network.name].usdc) as USDC
 
   console.log('Transferring tokens to initial owners...')
   await USDC.transfer(leboAddress, hre.ethers.parseEther('100'))
