@@ -5,12 +5,11 @@ import "@openzeppelin/contracts/access/Ownable.sol";
 import "@openzeppelin/contracts/token/ERC20/IERC20.sol";
 import "@openzeppelin/contracts/token/ERC20/utils/SafeERC20.sol";
 
-import {VerifySig} from "./VerifySig.sol";
+import { Verifier } from  "./Verifier.sol";
 
-
-contract LendingProtocol is Ownable {
-using SafeERC20 for IERC20;
-
+contract LendingProtocol is Ownable, Verifier {
+    using SafeERC20 for IERC20;
+    
     // Mapping to track borrowed and supplied amounts
     mapping(address => uint256) public totalBorrowed;
     mapping(address => uint256) public totalSupplied;
@@ -51,16 +50,11 @@ using SafeERC20 for IERC20;
     function borrow(uint256 requestedAmount, uint256 creditLimit, bytes memory signature) external {
         require(totalSuppliedAmount >= requestedAmount, "Insufficient liquidity in the pool");
 
+        // Check if the borrower has enough credit limit
+        require(totalBorrowed[msg.sender] + requestedAmount <= creditLimit, "Borrowing exceeds credit limit");
+
         // Verify the signature
-        bytes memory message = abi.encode(msg.sender, creditLimit);
-        bytes32 messageHash = VerifySig.getMessageHash(message);
-        address signatureSigner = VerifySig.recover(messageHash, signature);
-        require(signatureSigner == backendSigner, "Invalid signature signer");
-
-        require(totalBorrowed[msg.sender] + requestedAmount <= creditLimit,
-            "Borrowing exceeds credit limit"
-        );
-
+        require(verify(backendSigner, abi.encode(msg.sender, creditLimit), signature), "Invalid signature");
 
 
         // Update the borrower's total borrowed amount
@@ -87,9 +81,10 @@ using SafeERC20 for IERC20;
 
         IERC20(erc20token).transfer(msg.sender, amount);
 
+
         totalSupplied[msg.sender] -= amount;
         totalSuppliedAmount -= amount;
-
+    
         emit Withdrawn(msg.sender, amount);
     }
 
