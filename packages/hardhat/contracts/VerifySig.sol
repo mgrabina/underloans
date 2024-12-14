@@ -1,8 +1,8 @@
 // SPDX-License-Identifier: MIT
 pragma solidity ^0.8.0;
 
-library VerifySig {
-    function getMessageHash(bytes memory _msg) public pure returns (bytes32) {
+contract VerifySig {
+    function getMessageHash(string memory _msg) public pure returns (bytes32) {
         return keccak256(abi.encodePacked(_msg));
     }
 
@@ -19,7 +19,7 @@ library VerifySig {
 
     function verify(
         address _signer,
-        bytes memory _message,
+        string memory _message,
         bytes memory signature
     ) public pure returns (bool success) {
         bytes32  _hashMessage = getMessageHash(_message);

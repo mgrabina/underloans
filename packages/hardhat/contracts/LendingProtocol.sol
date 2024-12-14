@@ -52,7 +52,7 @@ using SafeERC20 for IERC20;
         require(totalSuppliedAmount >= requestedAmount, "Insufficient liquidity in the pool");
 
         // Verify the signature
-        bytes memory message = abi.encodePacked(msg.sender, creditLimit);
+        bytes memory message = abi.encode(msg.sender, creditLimit);
         bytes32 messageHash = VerifySig.getMessageHash(message);
         address signatureSigner = VerifySig.recover(messageHash, signature);
         require(signatureSigner == backendSigner, "Invalid signature signer");
