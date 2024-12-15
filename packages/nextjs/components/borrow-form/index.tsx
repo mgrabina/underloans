@@ -4,7 +4,7 @@ import React, { useContext, useEffect, useRef, useState } from "react";
 import Link from "next/link";
 import { toast } from "../ui/use-toast";
 import { Address, formatUnits, parseUnits } from "viem";
-import { useAccount, useReadContract, useWaitForTransactionReceipt, useWriteContract } from "wagmi";
+import { useAccount, useReadContract, useReadContracts, useWaitForTransactionReceipt, useWriteContract } from "wagmi";
 import KYCButton from "~~/components/KYCButton.tsx";
 import { Button } from "~~/components/ui/button";
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "~~/components/ui/card";
@@ -34,10 +34,19 @@ export default function RequestLoanForm({
   const [amount, setAmount] = useState<string>("");
   const chainId = account.chainId || OptimismSepoliaChainId;
   const { writeContractAsync, isPending, isSuccess, data: txHash } = useWriteContract();
-  const { data: totalSuppliedAmount } = useReadContract({
-    abi: LendingProtocol__factory.abi,
-    address: ContractAddresses[chainId].lendingProtocol,
-    functionName: "totalSuppliedAmount",
+  const { data: fetchedContractsData } = useReadContracts({
+    contracts: [
+      {
+        abi: LendingProtocol__factory.abi,
+        address: ContractAddresses[chainId].lendingProtocol,
+        functionName: "totalSuppliedAmount",
+      },
+      {
+        abi: LendingProtocol__factory.abi,
+        address: ContractAddresses[chainId].lendingProtocol,
+        functionName: "totalBorrowedAmount",
+      },
+    ],
   });
   const receipt = useWaitForTransactionReceipt({ chainId, hash: txHash });
   const hasReceiptRef = useRef(false);
@@ -78,6 +87,8 @@ export default function RequestLoanForm({
     }
   }, [receipt]);
 
+  const TVL = (fetchedContractsData?.[0].result || 0n) - (fetchedContractsData?.[1].result || 0n);
+
   return (
     <div className="flex flex-col gap-20 max-w-md">
       <Card>
@@ -86,7 +97,7 @@ export default function RequestLoanForm({
           <CardDescription>Experience the freedom of borrowing without the need for collateral.</CardDescription>
         </CardHeader>
         <CardContent className="space-y-4">
-          <p className="text-sm">Total supplied: {formatUnits(totalSuppliedAmount || 0n, TOKEN_DECIMALS)} USDC</p>
+          <p className="text-sm">Total value locked: {formatUnits(TVL, TOKEN_DECIMALS)} USDC</p>
           <KYCButton />
           <Input placeholder="XXX USDC" value={amount} onChange={e => setAmount(e.target.value)} />
         </CardContent>
