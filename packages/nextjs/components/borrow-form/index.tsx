@@ -79,7 +79,7 @@ export default function RequestLoanForm({
   useEffect(() => {
     if (hasReceiptRef.current) return;
 
-    if (receipt) {
+    if (receipt.isSuccess) {
       hasReceiptRef.current = true;
       toast({
         title: "Transaction confirmed",

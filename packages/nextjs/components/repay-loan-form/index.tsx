@@ -57,7 +57,7 @@ const RepayLoanForm = () => {
   useEffect(() => {
     if (hasReceiptRef.current) return;
 
-    if (receipt) {
+    if (receipt.isSuccess) {
       hasReceiptRef.current = true;
       toast({
         title: "Transaction confirmed",
