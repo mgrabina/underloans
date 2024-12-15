@@ -11,15 +11,23 @@ const Navigation = () => {
         <Image src={LogoSolo} alt="Talaria" height={35} className="md:hidden" />
         <Image src={HorizontalLogo} alt="Talaria" height={25} className="hidden md:block" />
       </Link>
-      <div className="flex gap-2">
-        <ConnectButton
-          showBalance={process.env.NODE_ENV === "development"}
-          chainStatus="icon"
-          accountStatus={{
-            smallScreen: "address",
-            largeScreen: "full",
-          }}
-        />
+      <div className="flex items-center gap-4">
+        <Link href="/" className="hidden md:block">
+          <p className="text-sm">Borrow</p>
+        </Link>
+        <Link href="/supply" className="hidden md:block">
+          <p className="text-sm">Supply</p>
+        </Link>
+        <div className="flex gap-2">
+          <ConnectButton
+            showBalance={process.env.NODE_ENV === "development"}
+            chainStatus="icon"
+            accountStatus={{
+              smallScreen: "address",
+              largeScreen: "full",
+            }}
+          />
+        </div>
       </div>
     </nav>
   );

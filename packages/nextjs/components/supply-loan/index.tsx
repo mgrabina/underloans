@@ -3,6 +3,7 @@
 import React, { useContext, useEffect, useRef, useState } from "react";
 import Link from "next/link";
 import { toast } from "../ui/use-toast";
+import { MaxUint256 } from "ethers";
 import { Address, formatUnits, parseUnits } from "viem";
 import { useAccount, useReadContract, useWaitForTransactionReceipt, useWriteContract } from "wagmi";
 import KYCButton from "~~/components/KYCButton.tsx";
@@ -11,45 +12,36 @@ import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle }
 import { Input } from "~~/components/ui/input";
 import { ContractAddresses } from "~~/constants";
 import { UserContext } from "~~/context";
-import { LendingProtocol__factory } from "~~/contracts-data/typechain-types";
+import { ERC20__factory, LendingProtocol__factory } from "~~/contracts-data/typechain-types";
 import { OptimismSepoliaChainId } from "~~/contracts/addresses";
 import { UserStatus } from "~~/types/entities/user";
 import { TransactionExplorerBaseUrl } from "~~/utils/explorer";
 
 export const TOKEN_DECIMALS = 18;
 
-export default function RequestLoanForm({
-  prepareLoanData,
-}: {
-  prepareLoanData: (
-    documentNumber: number,
-    address: Address,
-  ) => Promise<{
-    signedMessage: Address;
-    maxLoanAmount: string;
-  }>;
-}) {
+export default function SupplyForm({}: {}) {
   const { user } = useContext(UserContext);
   const account = useAccount();
   const [amount, setAmount] = useState<string>("");
   const chainId = account.chainId || OptimismSepoliaChainId;
   const { writeContractAsync, isPending, isSuccess, data: txHash } = useWriteContract();
-  const { data: totalSuppliedAmount } = useReadContract({
-    abi: LendingProtocol__factory.abi,
-    address: ContractAddresses[chainId].lendingProtocol,
-    functionName: "totalSuppliedAmount",
+  const { data: usdcBalance } = useReadContract({
+    abi: ERC20__factory.abi,
+    address: ContractAddresses[chainId].usdc,
+    functionName: "balanceOf",
+    args: [account.address || "0x123"],
   });
   const receipt = useWaitForTransactionReceipt({ chainId, hash: txHash });
   const hasReceiptRef = useRef(false);
-  const kycCompleted = user?.status === UserStatus.done;
+
+  const formattedBalance = formatUnits(BigInt((usdcBalance as bigint) || 0), TOKEN_DECIMALS);
 
   const handleTransaction = async () => {
     if (!user || !amount) return;
-    const { maxLoanAmount, signedMessage } = await prepareLoanData(Number(user.document), user.wallet as Address);
 
-    if (Number(amount) > Number(maxLoanAmount)) {
+    if (Number(amount) > Number(formattedBalance)) {
       toast({
-        title: "Amount exceeds maximum",
+        title: "Amount exceeds balance",
         variant: "destructive",
       });
       return;
@@ -58,8 +50,23 @@ export default function RequestLoanForm({
     await writeContractAsync({
       abi: LendingProtocol__factory.abi,
       address: ContractAddresses[chainId].lendingProtocol,
-      functionName: "borrow",
-      args: [parseUnits(amount, TOKEN_DECIMALS), parseUnits(maxLoanAmount, TOKEN_DECIMALS), signedMessage],
+      functionName: "supply",
+      args: [parseUnits(amount, TOKEN_DECIMALS)],
+    });
+
+    toast({
+      title: "Transaction sent",
+    });
+  };
+
+  const handleApproval = async () => {
+    if (!user || !amount) return;
+
+    await writeContractAsync({
+      abi: ERC20__factory.abi,
+      address: ContractAddresses[chainId].usdc,
+      functionName: "approve",
+      args: [ContractAddresses[chainId].lendingProtocol, MaxUint256],
     });
 
     toast({
@@ -82,23 +89,21 @@ export default function RequestLoanForm({
     <div className="flex flex-col gap-20 max-w-md">
       <Card>
         <CardHeader>
-          <CardTitle>Collateral-Free Borrowing</CardTitle>
-          <CardDescription>Experience the freedom of borrowing without the need for collateral.</CardDescription>
+          <CardTitle>Supply and Earn</CardTitle>
+          <CardDescription>Supply your assets and start earning interest.</CardDescription>
         </CardHeader>
         <CardContent className="space-y-4">
-          <p className="text-sm">Total supplied: {formatUnits(totalSuppliedAmount || 0n, TOKEN_DECIMALS)} USDC</p>
-          <KYCButton />
           <Input placeholder="XXX USDC" value={amount} onChange={e => setAmount(e.target.value)} />
+          <p className="text-sm text-muted-foreground">Balance: {formattedBalance}</p>
         </CardContent>
         <CardFooter className="flex flex-col gap-6">
-          <Button onClick={handleTransaction} disabled={!kycCompleted || isPending || !amount} className="w-full">
-            Request Loan
+          <Button onClick={handleApproval} disabled={!amount} className="w-full" variant="outline">
+            Approve
           </Button>
-          {txHash && (
-            <Link target="_blank" href={`${TransactionExplorerBaseUrl[chainId]}/${txHash}`}>
-              See transaction in explorer
-            </Link>
-          )}
+          <Button onClick={handleTransaction} disabled={isPending || !amount} className="w-full">
+            Supply and start earning
+          </Button>
+          {txHash && <Link target="_blank" href={`${TransactionExplorerBaseUrl[chainId]}/${txHash}`} />}
         </CardFooter>
       </Card>
     </div>

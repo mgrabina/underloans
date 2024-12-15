@@ -7,8 +7,10 @@ import { Button } from "../ui/button";
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "../ui/card";
 import { Input } from "../ui/input";
 import { toast } from "../ui/use-toast";
-import { formatUnits } from "viem";
+import { formatUnits, parseUnits } from "viem";
 import { useAccount, useReadContract, useWaitForTransactionReceipt, useWriteContract } from "wagmi";
+import { ContractAddresses } from "~~/constants";
+import { LendingProtocol__factory } from "~~/contracts-data/typechain-types";
 import { OptimismSepoliaChainId } from "~~/contracts/addresses";
 import { TransactionExplorerBaseUrl } from "~~/utils/explorer";
 
@@ -18,10 +20,10 @@ const RepayLoanForm = () => {
   const chainId = account.chainId || OptimismSepoliaChainId;
 
   const { data: totalBorrowedData } = useReadContract({
-    // abi: {},
-    address: "0x123",
+    abi: LendingProtocol__factory.abi,
+    address: ContractAddresses[chainId].lendingProtocol,
     functionName: "totalBorrowed",
-    args: [account.address],
+    args: [account.address || "0x123"],
   });
   const hasReceiptRef = useRef(false);
   const { writeContractAsync, isPending, isSuccess, data: txHash } = useWriteContract();
@@ -40,16 +42,15 @@ const RepayLoanForm = () => {
       return;
     }
 
-    // await writeContractAsync({
-    //   abi: {},
-    //   address: "0x123",
-    //   functionName: "repay",
-    //   args: [parseUnits(amount, TOKEN_DECIMALS)],
-    // });
+    await writeContractAsync({
+      abi: LendingProtocol__factory.abi,
+      address: ContractAddresses[chainId].lendingProtocol,
+      functionName: "repay",
+      args: [parseUnits(amount, TOKEN_DECIMALS)],
+    });
 
     toast({
-      title: "Amount exceeds maximum",
-      variant: "destructive",
+      title: "Transaction sent",
     });
   };
 
@@ -77,11 +78,15 @@ const RepayLoanForm = () => {
           <Input placeholder="XXX USDC" value={amount} onChange={e => setAmount(e.target.value)} />
           <p className="text-sm">Your total debt is {totalBorrowed} USDC</p>
         </CardContent>
-        <CardFooter>
+        <CardFooter className="flex flex-col gap-6">
           <Button onClick={handleTransaction} disabled={isPending || !amount} className="w-full">
-            Execute Transaction
+            Repay
           </Button>
-          {txHash && <Link target="_blank" href={`${TransactionExplorerBaseUrl[chainId]}/${txHash}`} />}
+          {txHash && (
+            <Link target="_blank" href={`${TransactionExplorerBaseUrl[chainId]}/${txHash}`}>
+              See transaction in explorer
+            </Link>
+          )}
         </CardFooter>
       </Card>
     </div>
