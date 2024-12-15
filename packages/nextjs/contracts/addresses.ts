@@ -13,16 +13,16 @@ export const MorphHoleskyChainId = 2810;
 export const BaseSepoliaChainId = 84532;
 
 // @todo separate test and mainnet addresses -> test at testnet.app.talariaprotocol.xyz
-export const WhitelistFactoryAddresses: Record<number, Address> = {
-  ...supportedNetworks
-    .map(network => {
-      const hardhatNetwork = mapViemChainToHardhatNetwork(network);
+// export const WhitelistFactoryAddresses: Record<number, Address> = {
+//   ...supportedNetworks
+//     .map(network => {
+//       const hardhatNetwork = mapViemChainToHardhatNetwork(network);
 
-      if (hardhatNetwork in DeployedAddresses)
-        return {
-          [network.id]: DeployedAddresses[hardhatNetwork as keyof typeof DeployedAddresses].WhitelistFactory as Address,
-        };
-      return {};
-    })
-    .reduce((acc, val) => ({ ...acc, ...val }), {}),
-};
+//       if (hardhatNetwork in DeployedAddresses)
+//         return {
+//           [network.id]: DeployedAddresses[hardhatNetwork as keyof typeof DeployedAddresses].WhitelistFactory as Address,
+//         };
+//       return {};
+//     })
+//     .reduce((acc, val) => ({ ...acc, ...val }), {}),
+// };
