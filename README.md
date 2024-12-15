@@ -1,61 +1,188 @@
-# Talaria
+> # UnderLoans
+>
+> Undercollateralized Lending Platform based on TradFi Risk assessment models and blockchain technology.
 
-**Talaria: Secure, Configurable Access-Management Without the Hassle of Wallet Addresses**
+UnderLoans is a decentralized platform enabling undercollateralized loans on-chain. By bridging traditional finance (TradFi) risk assessment models with blockchain technology, it unlocks access to credit for individuals and businesses excluded by traditional systems.
 
-Talaria offers a secure, address-free access-management solution that leverages commitment-based systems linked to nullifiers. Our platform is designed to address the challenges of using wallet addresses for crypto transactions, providing a flexible and customizable approach to managing access for a wide range of applications, from early access codes to subscription payments.
+---
+
+## Table of Contents
+
+- [Table of Contents](#table-of-contents)
+- [Overview](#overview)
+- [Problem](#problem)
+- [Solution](#solution)
+- [Features](#features)
+- [Technologies](#technologies)
+- [Getting Started](#getting-started)
+  - [Prerequisites](#prerequisites)
+  - [Installation](#installation)
+  - [Environment Setup](#environment-setup)
+  - [Running Locally](#running-locally)
+- [Scripts](#scripts)
+  - [Contracts (Hardhat)](#contracts-hardhat)
+  - [DApp (Next.js)](#dapp-nextjs)
+- [Key Files](#key-files)
+  - [Contracts](#contracts)
+  - [Other important files](#other-important-files)
+- [Future Work](#future-work)
+- [Contributing](#contributing)
+- [License](#license)
+- [Contact](#contact)
+
+---
 
 ## Overview
 
-Talaria is inspired by privacy-preserving solutions like Tornado Cash but is designed with a distinct focus on flexibility and configurability rather than privacy. By using commitment schemes linked to nullifiers, Talaria enables a variety of secure, permission-based interactions on the blockchain, making it easier for developers to implement access management without the need for wallet addresses.
+**UnderLoans** addresses the limitations of traditional lending systems by offering global, borderless, and undercollateralized loans. Using on-chain transparency and decentralized credit scoring, it connects borrowers and lenders directly, reducing barriers and enhancing financial inclusion.
+
+---
+
+## Problem
+
+- **Barriers to Financial Inclusion**: High collateral requirements lock out most borrowers.
+- **Exclusion of the Underbanked**: Credit-invisible individuals and censored users have no access to loans.
+- **Capital Inefficiency**: Overcollateralized loans trap valuable capital, limiting growth.
+- **Fragmented Liquidity**: Local lending markets miss out on global opportunities.
+
+---
+
+## Solution
+
+UnderLoans combines the best of TradFi and DeFi:
+
+- **Undercollateralized Loans**: Borrowers can access credit with minimal collateral.
+- **Global Liquidity**: Lenders from anywhere can support borrowers worldwide.
+- **Smart Risk Assessment**: Uses TradFi and on-chain data to evaluate creditworthiness.
+- **Transparent Contracts**: Loans are governed by smart contracts ensuring security and automation.
+
+---
 
 ## Features
 
-- **Address-Free Transactions**: Simplifies the user experience by eliminating the need for wallet addresses in many crypto transactions.
-- **Configurable Access Management**: Provides a flexible system where permissions can be customized for a wide range of use cases.
-- **Modular Design**: Built with Pedersen hashes, Merkle trees, and a modular architecture, allowing easy integration with existing protocols.
-- **Supports Multiple Standards**: Compatible with ERC20, ERC721, ERC1155, and other token standards, as well as DEFI and RWA.
-- **Validation Modules**: Incorporates validation modules like Worldcoin Personhood Validator and Privado ID ZKProof Validator for enhanced functionality.
-- **Scalable & Efficient**: Low maintenance costs with no need for large backends or databases.
+- **KYC Integration**: Secure identity verification links borrowers to wallets.
+- **TradFi Data Integration**: Leverages APIs from central banks and credit bureaus (e.g., BCRA in Argentina).
+- **Decentralized Lending Pools**: Lenders provide liquidity and earn yields.
 
-## Use Cases
+---
 
-Talaria can be applied to a wide range of scenarios, including but not limited to:
+## Technologies
 
-1. **Early Access Codes**: Grant early access to events, products, or services without requiring users to provide wallet addresses.
-2. **Gift Cards**: Issue digital gift cards that can be redeemed without linking to a wallet address.
-3. **Airdrops**: Distribute tokens or NFTs without needing the recipient's wallet address upfront.
-4. **Event Tickets**: Manage ticket distribution and validation for events securely and efficiently.
-5. **Identification Checks**: Validate user identities using various modules without compromising privacy.
-6. **Bridges**: Facilitate cross-chain asset transfers where the swap can be processed later when liquidity is available.
-7. **Subscription Payments**: Implement recurring payments without storing sensitive user data.
-8. **Checks**: Issue digital checks that can be cashed in later by the recipient.
+- **Hardhat**: Ethereum development framework for smart contracts.
+- **Next.js**: Frontend framework for building scalable DApps.
+- **Ethers.js**: Blockchain interaction library.
+- **TypeScript**: Strongly-typed development for reliability and maintainability.
+- **Yarn Workspaces**: Efficient dependency management for monorepos.
 
-## How It Works
+---
 
-### Core Components
+## Getting Started
 
-- **Commitments and Nullifiers**: Talaria relies on a system of commitments linked to nullifiers. When a transaction or action is initiated, a commitment is created. Later, this commitment can be nullified (or spent) by presenting a corresponding nullifier.
-- **Pedersen Hashes**: Used for generating cryptographic commitments that are secure and efficient.
-- **Merkle Trees**: Provides a scalable way to manage large sets of commitments, enabling quick verification and validation.
-- **Modular Design**: Talaria is built with modularity in mind, allowing for easy integration of new validation modules and other enhancements.
+### Prerequisites
 
-### Example Flow
+Ensure you have the following installed:
 
-1. **Setup**: A user or service generates a commitment for an action or asset.
-2. **Configuration**: The commitment is configured with specific permissions or rules (e.g., who can spend it, when, and under what conditions).
-3. **Execution**: The recipient interacts with the system, presenting the required information to nullify the commitment and execute the action (e.g., claiming a gift card, receiving an airdrop).
-4. **Validation**: The system validates the nullifier against the commitment, ensuring that the rules have been followed.
+- **Node.js**: `>= 18.17.0`
+- **Yarn**: `3.2.3`
 
-## Installation
+### Installation
 
-To get started with Talaria, clone the repository and install the necessary dependencies:
+Clone the repository and install dependencies:
 
 ```bash
-git clone https://github.com/mgrabina/commit
-cd commit
+git clone https://github.com/mgrabina/underloans.git
+cd underloans
 yarn install
 ```
 
-Then, follow instructions in each package.
+### Environment Setup
 
-Contact x.com/mgrabina, x.com/th0rOdinson, x.com/nicolaslebovits
+Create a `.env` file in the root of the project and add the required environment variables.
+
+### Running Locally
+
+1. **Start Local Blockchain**:  
+   Run a local Ethereum network using Hardhat.
+
+   ```bash
+   yarn chain
+   ```
+
+2. **Deploy Contracts**:  
+   Deploy the smart contracts to the local network.
+
+   ```bash
+   yarn deploy
+   ```
+
+3. **Start Frontend**:  
+   Run the Next.js DApp locally.
+   ```bash
+   yarn start
+   ```
+
+Access the DApp at [http://localhost:3000](http://localhost:3000).
+
+---
+
+## Scripts
+
+### Contracts (Hardhat)
+
+- **Start Local Chain**: `yarn chain`
+- **Deploy Contracts**: `yarn deploy`
+- **Compile Contracts**: `yarn contracts:compile`
+- **Run Tests**: `yarn contracts:test`
+- **Verify Contracts**: `yarn verify`
+
+### DApp (Next.js)
+
+- **Start Development Server**: `yarn start`
+- **Build for Production**: `yarn dapp:build`
+- **Check Types**: `yarn next:check-types`
+
+---
+
+## Key Files
+
+### Contracts
+The UnderLoans protocol relies on three key contracts:
+1. **LendingProtocol**: Handles borrowing, lending, and repayment. It verifies credit limits via signed messages and manages liquidity.
+2. **USDC Contract**: An ERC20 token used for lending and borrowing, supporting minting, burning, and permit functionality.
+3. **Verifier**: Validates signed credit limits using Ethereum signature recovery.
+The contracts are deployed on **Optimism** and **zkSync** for fast and cost-efficient transactions. All functionality is rigorously tested to ensure reliability and security.
+
+### Other important files
+1. bcra.integration.ts
+2. api/kyc/route.ts
+
+---
+
+## Future Work
+
+- **Enhanced Risk Models**: Include data from multiple TradFi and on-chain sources.
+- **Cross-Chain Lending**: Expand to support cross-chain loans.
+- **Yield Optimization**: Advanced calculations for lender returns.
+- **Integration with DeFi Protocols**: Broader utility for lending pools.
+
+---
+
+## Contributing
+
+We welcome contributions! Please open an issue or submit a pull request to suggest improvements or add features.
+
+---
+
+## License
+
+This project is licensed under the [MIT License](./LICENSE).
+
+---
+
+## Contact
+
+For questions or support, please contact the team:
+
+- **Martin** ([Twitter](https://twitter.com/mgrabina))
+- **0xTh0rOdinson** ([Twitter](https://twitter.com/0xTh0rOdinson))
+- **Nicolas** ([Twitter](https://twitter.com/nicolaslebovits))
