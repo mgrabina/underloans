@@ -7,10 +7,11 @@ import { Button } from "../ui/button";
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "../ui/card";
 import { Input } from "../ui/input";
 import { toast } from "../ui/use-toast";
+import { MaxUint256 } from "ethers";
 import { formatUnits, parseUnits } from "viem";
 import { useAccount, useReadContract, useWaitForTransactionReceipt, useWriteContract } from "wagmi";
 import { ContractAddresses } from "~~/constants";
-import { LendingProtocol__factory } from "~~/contracts-data/typechain-types";
+import { ERC20__factory, LendingProtocol__factory } from "~~/contracts-data/typechain-types";
 import { OptimismSepoliaChainId } from "~~/contracts/addresses";
 import { TransactionExplorerBaseUrl } from "~~/utils/explorer";
 
@@ -54,6 +55,21 @@ const RepayLoanForm = () => {
     });
   };
 
+  const handleApproval = async () => {
+    if (!amount) return;
+
+    await writeContractAsync({
+      abi: ERC20__factory.abi,
+      address: ContractAddresses[chainId].usdc,
+      functionName: "approve",
+      args: [ContractAddresses[chainId].lendingProtocol, MaxUint256],
+    });
+
+    toast({
+      title: "Transaction sent",
+    });
+  };
+
   useEffect(() => {
     if (hasReceiptRef.current) return;
 
@@ -79,6 +95,9 @@ const RepayLoanForm = () => {
           <p className="text-sm">Your total debt is {totalBorrowed} USDC</p>
         </CardContent>
         <CardFooter className="flex flex-col gap-6">
+          <Button onClick={handleApproval} disabled={!amount} className="w-full" variant="outline">
+            Approve
+          </Button>
           <Button onClick={handleTransaction} disabled={isPending || !amount} className="w-full">
             Repay
           </Button>

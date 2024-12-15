@@ -9,7 +9,7 @@ const Navigation = () => {
     <nav className="fixed top-0 left-0 w-full flex justify-between items-center py-3 px-6 border-b border-gray-200 backdrop-blur-lg z-50">
       <Link href="/">
         <Image src={LogoSolo} alt="Talaria" height={35} className="md:hidden" />
-        <Image src={HorizontalLogo} alt="Talaria" height={25} className="hidden md:block" />
+        <Image src={HorizontalLogo} alt="Talaria" height={45} className="hidden md:block" />
       </Link>
       <div className="flex items-center gap-4">
         <Link href="/" className="hidden md:block">
