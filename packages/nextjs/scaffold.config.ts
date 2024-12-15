@@ -26,8 +26,8 @@ export const mapHardhatNetworkToViemChain = (network: string): chains.Chain => {
       return chains.spicy;
     case "morphHolesky":
       return chains.morphHolesky;
-    case "zkSyncSepoliaTestnet":
-      return chains.zkSyncSepoliaTestnet;
+    case "zksyncSepoliaTestnet":
+      return chains.zksyncSepoliaTestnet;
     case "arbitrum":
       return chains.arbitrum;
     case "polygon":
@@ -54,8 +54,8 @@ export const mapViemChainToHardhatNetwork = (network: chains.Chain): string => {
       return "spicy";
     case chains.morphHolesky:
       return "morphHolesky";
-    case chains.zkSyncSepoliaTestnet:
-      return "zkSyncSepoliaTestnet";
+    case chains.zksyncSepoliaTestnet:
+      return "zksyncSepoliaTestnet";
     case chains.arbitrum:
       return "arbitrum";
     case chains.polygon:

@@ -13,5 +13,5 @@ type deployedContracts = keyof (typeof addresses)["optimismSepolia"];
 
 export const ContractAddresses: Record<number, Record<deployedContracts, Address>> = {
   [OptimismSepoliaChainId]: addresses["optimismSepolia"] as Record<deployedContracts, Address>,
-  [zkSyncTestNetCode]: addresses["zkSyncSepolia"] as Record<deployedContracts, Address>,
+  [zkSyncTestNetCode]: addresses["zksyncSepoliaTestnet"] as Record<deployedContracts, Address>,
 };
