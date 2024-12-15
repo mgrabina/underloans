@@ -5,6 +5,6 @@
   },
   "zkSyncSepolia": {
     "usdc": "0xC2bcA9e25C58b18a358e0062002D7acC92C56202",
-    "LendingProtocol": "0x8eb33A9F1bbD4eA73ED4645b8D170ad5d6078B8e"
+    "lendingProtocol": "0x8eb33A9F1bbD4eA73ED4645b8D170ad5d6078B8e"
   }
 }
